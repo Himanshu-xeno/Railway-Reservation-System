@@ -1,0 +1,113 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "ApiGateway (Port 7000)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build-apigateway",
+      "program": "${workspaceFolder}/ApiGateway/bin/Debug/net10.0/ApiGateway.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/ApiGateway",
+      "stopAtEntry": false,
+      "serverReadyAction": {
+        "action": "openUrl",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)",
+        "uriFormat": "%s/swagger"
+      },
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://localhost:7000"
+      }
+    },
+    {
+      "name": "AuthService (Port 7001)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build-authservice",
+      "program": "${workspaceFolder}/AuthService/bin/Debug/net10.0/AuthService.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/AuthService",
+      "stopAtEntry": false,
+      "serverReadyAction": {
+        "action": "openUrl",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)",
+        "uriFormat": "%s/swagger"
+      },
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://localhost:7001"
+      }
+    },
+    {
+      "name": "TrainService (Port 7002)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build-trainservice",
+      "program": "${workspaceFolder}/TrainService/bin/Debug/net10.0/TrainService.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/TrainService",
+      "stopAtEntry": false,
+      "serverReadyAction": {
+        "action": "openUrl",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)",
+        "uriFormat": "%s/swagger"
+      },
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://localhost:7002"
+      }
+    },
+    {
+      "name": "ReservationService (Port 7003)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build-reservationservice",
+      "program": "${workspaceFolder}/ReservationService/bin/Debug/net10.0/ReservationService.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/ReservationService",
+      "stopAtEntry": false,
+      "serverReadyAction": {
+        "action": "openUrl",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)",
+        "uriFormat": "%s/swagger"
+      },
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://localhost:7003"
+      }
+    },
+    {
+      "name": "PaymentService (Port 7004)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build-paymentservice",
+      "program": "${workspaceFolder}/PaymentService/bin/Debug/net10.0/PaymentService.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/PaymentService",
+      "stopAtEntry": false,
+      "serverReadyAction": {
+        "action": "openUrl",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)",
+        "uriFormat": "%s/swagger"
+      },
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://localhost:7004"
+      }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "🚀 Run All Microservices",
+      "configurations": [
+        "AuthService (Port 7001)",
+        "TrainService (Port 7002)",
+        "PaymentService (Port 7004)",
+        "ReservationService (Port 7003)",
+        "ApiGateway (Port 7000)"
+      ],
+      "stopAll": true
+    }
+  ]
+}

@@ -9,3 +9,4 @@ C:\Users\hishashi\OneDrive - Capgemini\Desktop\Railway Resevation System\Shared\
 C:\Users\hishashi\OneDrive - Capgemini\Desktop\Railway Resevation System\Shared\obj\Debug\net10.0\refint\Shared.dll
 C:\Users\hishashi\OneDrive - Capgemini\Desktop\Railway Resevation System\Shared\obj\Debug\net10.0\Shared.pdb
 C:\Users\hishashi\OneDrive - Capgemini\Desktop\Railway Resevation System\Shared\obj\Debug\net10.0\ref\Shared.dll
+C:\Users\hishashi\OneDrive - Capgemini\Desktop\Railway Resevation System\Shared\obj\Debug\net10.0\Shared.sourcelink.json

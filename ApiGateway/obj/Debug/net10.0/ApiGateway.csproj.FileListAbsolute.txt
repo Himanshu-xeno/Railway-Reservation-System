@@ -45,3 +45,4 @@ C:\Users\hishashi\OneDrive - Capgemini\Desktop\Railway Resevation System\ApiGate
 C:\Users\hishashi\OneDrive - Capgemini\Desktop\Railway Resevation System\ApiGateway\obj\Debug\net10.0\ApiGateway.pdb
 C:\Users\hishashi\OneDrive - Capgemini\Desktop\Railway Resevation System\ApiGateway\obj\Debug\net10.0\ApiGateway.genruntimeconfig.cache
 C:\Users\hishashi\OneDrive - Capgemini\Desktop\Railway Resevation System\ApiGateway\obj\Debug\net10.0\ref\ApiGateway.dll
+C:\Users\hishashi\OneDrive - Capgemini\Desktop\Railway Resevation System\ApiGateway\obj\Debug\net10.0\ApiGateway.sourcelink.json
