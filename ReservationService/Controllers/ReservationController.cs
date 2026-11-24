@@ -8,7 +8,6 @@ using System.Security.Claims;
 namespace ReservationService.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
 [Route("api/reservations")]
 [Authorize]
 public class ReservationController : ControllerBase

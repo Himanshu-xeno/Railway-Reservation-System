@@ -7,7 +7,6 @@ using TrainService.Services;
 namespace TrainService.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
 [Route("api/trains")]
 public class TrainController : ControllerBase
 {

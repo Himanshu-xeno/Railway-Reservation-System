@@ -5,7 +5,6 @@ using PaymentService.Services;
 namespace PaymentService.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
 [Route("api/payments")]
 public class PaymentController : ControllerBase
 {
