@@ -19,7 +19,6 @@ public class PaymentController : ControllerBase
     /// Process simulated payment (Internal and direct routes supported)
     /// </summary>
     [HttpPost("process")]
-    [HttpPost("/api/internal/payments")]
     [ProducesResponseType(typeof(PaymentResponseDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
@@ -33,7 +32,6 @@ public class PaymentController : ControllerBase
     /// Process refund for a cancelled booking using path parameter
     /// </summary>
     [HttpPost("{reservationId}/refund")]
-    [HttpPost("/api/internal/payments/{reservationId}/refund")]
     [ProducesResponseType(typeof(PaymentResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
@@ -63,7 +61,6 @@ public class PaymentController : ControllerBase
     /// Retrieve payment records for a reservation
     /// </summary>
     [HttpGet("{reservationId}")]
-    [HttpGet("/api/internal/payments/{reservationId}")]
     [ProducesResponseType(typeof(IEnumerable<PaymentResponseDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetByReservationId(int reservationId)
     {

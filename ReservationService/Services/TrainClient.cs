@@ -32,7 +32,7 @@ public class TrainClient : ITrainClient
 
     public async Task<bool> ReserveSeatsAsync(int trainId, int seatCount)
     {
-        var response = await _httpClient.PostAsJsonAsync("/api/internal/seats/reserve", new
+        var response = await _httpClient.PostAsJsonAsync("/api/trains/reserve-seats", new
         {
             TrainId = trainId,
             SeatCount = seatCount
@@ -54,7 +54,7 @@ public class TrainClient : ITrainClient
 
     public async Task<bool> ReleaseSeatsAsync(int trainId, int seatCount)
     {
-        var response = await _httpClient.PostAsJsonAsync("/api/internal/seats/release", new
+        var response = await _httpClient.PostAsJsonAsync("/api/trains/release-seats", new
         {
             TrainId = trainId,
             SeatCount = seatCount

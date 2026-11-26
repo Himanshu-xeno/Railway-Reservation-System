@@ -4,11 +4,12 @@ using Microsoft.OpenApi.Models;
 using Shared.Settings;
 using System.Text;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);   //creates ASP.NET application
 
 // 1. Configure JWT Settings
+//reads jwt settings from appsettings.json
 var jwtSection = builder.Configuration.GetSection("JwtSettings");
-builder.Services.Configure<JwtSettings>(jwtSection);
+builder.Services.Configure<JwtSettings>(jwtSection);    //use JWT for login verification
 var jwtSettings = jwtSection.Get<JwtSettings>() ?? new JwtSettings();
 
 // 2. Configure JWT Authentication
@@ -16,7 +17,9 @@ builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme    = JwtBearerDefaults.AuthenticationScheme;
+    //Whenever authorization is required, check JWT token.
 })
+
 .AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters

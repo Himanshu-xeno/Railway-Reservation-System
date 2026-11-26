@@ -114,7 +114,6 @@ public class TrainController : ControllerBase
     /// Reserve seats for a booking (Supports both internal and direct route)
     /// </summary>
     [HttpPost("reserve-seats")]
-    [HttpPost("/api/internal/seats/reserve")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(ReserveSeatsResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -129,7 +128,6 @@ public class TrainController : ControllerBase
     /// Release reserved seats upon cancellation or booking failure
     /// </summary>
     [HttpPost("release-seats")]
-    [HttpPost("/api/internal/seats/release")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(ReleaseSeatsResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

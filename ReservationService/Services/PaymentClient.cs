@@ -14,7 +14,7 @@ public class PaymentClient : IPaymentClient
 
     public async Task<PaymentResultDto> ProcessPaymentAsync(int reservationId, decimal amount)
     {
-        var response = await _httpClient.PostAsJsonAsync("/api/internal/payments", new
+        var response = await _httpClient.PostAsJsonAsync("/api/payments/process", new
         {
             ReservationId = reservationId,
             Amount = amount
@@ -43,7 +43,7 @@ public class PaymentClient : IPaymentClient
 
     public async Task<PaymentResultDto> RefundPaymentAsync(int reservationId, decimal amount)
     {
-        var response = await _httpClient.PostAsJsonAsync($"/api/internal/payments/{reservationId}/refund", new
+        var response = await _httpClient.PostAsJsonAsync($"/api/payments/{reservationId}/refund", new
         {
             Amount = amount
         });
