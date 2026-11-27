@@ -1,7 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace AuthService.DTOs;
+namespace AuthService.DTOs; //stores DTO (client<-->API)
 
+//use for Login request
+//Represents the JSON coming from frontend.
+//ASP.Net convert JSON into LoginRequestDto obj (Model Binding)
 public class LoginRequestDto
 {
     [Required(ErrorMessage = "Email is required")]

@@ -9,9 +9,10 @@ using Microsoft.OpenApi.Models;
 using Shared.Settings;
 using System.Text;
 
+//create app
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Configure Database Context
+// 1. Configure Database Context - register dbcontext in DI
 builder.Services.AddDbContext<AuthDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -38,9 +39,11 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = jwtSettings.Audience,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey)),
         ClockSkew = TimeSpan.Zero
+        //No grace period after expiry.
     };
 });
 
+//support [Authorize] 
 builder.Services.AddAuthorization();
 
 // 4. Register Repositories and Services (Dependency Injection)
@@ -88,9 +91,10 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// 7. Auto-Seed Database
+// 7. Auto-Seed Database - insert default data 
 using (var scope = app.Services.CreateScope())
 {
+    //temp service scope create - scoped service(AuthDbCOntext) use during startup app
     var context = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
     try
     {
@@ -98,6 +102,7 @@ using (var scope = app.Services.CreateScope())
     }
     catch (Exception ex)
     {
+        //Get logging service - To write message to terminal(log file)
         var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
         logger.LogWarning(ex, "Could not seed Auth database on startup. Ensure SQL Server is accessible.");
     }
@@ -113,11 +118,17 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+//Middleware in between request pipeline
+//Catch every unhandled exception - returns ugly server error.
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
+//Checks JWT Tokens.
 app.UseAuthentication();
 app.UseAuthorization();
 
+//Connects Controller Routes to URLs. [HttpPost("login")] -> /api/auth/login
 app.MapControllers();
 
+//Starts Kestrel Web Server.
+//Starts listening for requests.(authservice is live)
 app.Run();

@@ -1,3 +1,5 @@
+//Runs : Every time application starts (Program.cs calling)
+
 using AuthService.Models;
 using Shared.Constants;
 using System.Security.Cryptography;
@@ -5,6 +7,8 @@ using System.Text;
 
 namespace AuthService.Data;
 
+
+//No need to create obj(static) - direct acces via AuthDbSeeder
 public static class AuthDbSeeder
 {
     public static void Seed(AuthDbContext context)

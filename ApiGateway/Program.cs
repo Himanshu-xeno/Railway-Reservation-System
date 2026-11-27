@@ -4,22 +4,28 @@ using Microsoft.OpenApi.Models;
 using Shared.Settings;
 using System.Text;
 
+//create,config asp.net core app
 var builder = WebApplication.CreateBuilder(args);   //creates ASP.NET application
 
 // 1. Configure JWT Settings
-//reads jwt settings from appsettings.json
+//reads jwt settings(json) from appsettings.json
 var jwtSection = builder.Configuration.GetSection("JwtSettings");
+//register jwt setting in DI
 builder.Services.Configure<JwtSettings>(jwtSection);    //use JWT for login verification
+//convert json in c# obj(map to obj)
 var jwtSettings = jwtSection.Get<JwtSettings>() ?? new JwtSettings();
 
 // 2. Configure JWT Authentication
+//before access know who are u?
 builder.Services.AddAuthentication(options =>
 {
+    //Whenever authorization is required, check JWT token.
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme    = JwtBearerDefaults.AuthenticationScheme;
-    //Whenever authorization is required, check JWT token.
+    
 })
 
+//How to validate JWT token
 .AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
@@ -32,9 +38,11 @@ builder.Services.AddAuthentication(options =>
         ValidAudience            = jwtSettings.Audience,
         IssuerSigningKey         = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey)),
         ClockSkew                = TimeSpan.Zero
+        //default asp.net-5min(extra) but here expire exact time
     };
 });
 
+//allowed or not?
 builder.Services.AddAuthorization();
 
 // 3. Configure YARP Reverse Proxy
@@ -45,9 +53,12 @@ builder.Services.AddReverseProxy()
 builder.Services.AddHttpClient();
 
 // 5. Configure Swagger / OpenAPI for ApiGateway
+//allow api to appear
 builder.Services.AddEndpointsApiExplorer();
+//gen swagger doc
 builder.Services.AddSwaggerGen(c =>
 {
+    //Create doc metadata display : RRS-API Gateway
     c.SwaggerDoc("v1", new OpenApiInfo
     {
         Title       = "Railway Reservation System - API Gateway",
@@ -55,6 +66,7 @@ builder.Services.AddSwaggerGen(c =>
         Description = "Central API Gateway powered by YARP. Use the definition selector at top right to test Auth, Train, Reservation, and Payment microservices directly from this Gateway UI."
     });
 
+    //Adds authorize button in swagger (paste bearer token)
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "JWT Authorization header using the Bearer scheme. Example: \"Bearer {token}\"",
@@ -64,6 +76,7 @@ builder.Services.AddSwaggerGen(c =>
         Scheme      = "Bearer"
     });
 
+    //Make swagger send token automatic with request
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -84,6 +97,7 @@ var app = builder.Build();
 
 // 6. Swagger UI aggregation endpoints
 // Proxy the downstream swagger json files through gateway port 7000
+//To show all microservice APIs from a single Gateway Swagger page.
 app.MapGet("/swagger-docs/auth", async (IHttpClientFactory clientFactory) =>
 {
     var client = clientFactory.CreateClient();
@@ -148,6 +162,7 @@ app.MapGet("/swagger-docs/payments", async (IHttpClientFactory clientFactory) =>
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
+    //Adds multiple dropdown entries:
     app.UseSwaggerUI(c =>
     {
         // Select definitions from the dropdown at the top right of the Gateway Swagger UI
@@ -162,6 +177,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+//Checks JWT token.
 app.UseAuthentication();
 app.UseAuthorization();
 

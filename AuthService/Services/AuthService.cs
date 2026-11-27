@@ -16,9 +16,14 @@ namespace AuthService.Services;
 
 public class AuthService : IAuthService
 {
+    //stores repository object
     private readonly IUserRepository _userRepository;
+    //stores jwt config(settings)
     private readonly JwtSettings _jwtSettings;
 
+
+
+    //DI provides us userRepo & JwtSettings automatic
     public AuthService(
         IUserRepository userRepository,
         IOptions<JwtSettings> jwtOptions)
@@ -27,6 +32,8 @@ public class AuthService : IAuthService
         _jwtSettings = jwtOptions.Value;
     }
 
+
+    //1.Create new user(registration)
     public async Task<RegisterResponseDto> RegisterAsync(
         RegisterRequestDto request)
     {
@@ -61,9 +68,8 @@ public class AuthService : IAuthService
                 "Password must be at least 8 characters and contain at least one letter and one number.");
         }
 
-        // 3. Hash password
-        var passwordHash =
-            AuthDbSeeder.HashPassword(request.Password);
+        // 3. Hash password - storing the HashPassword
+        var passwordHash = AuthDbSeeder.HashPassword(request.Password);
 
         // 4. Determine role (default to User)
         var role = string.Equals(
@@ -73,7 +79,7 @@ public class AuthService : IAuthService
             ? Roles.Admin
             : Roles.User;
 
-        // 5. Create user
+        // 5. Create user object(user entity)
         var user = new User
         {
             Name = request.Name.Trim(),
@@ -83,9 +89,10 @@ public class AuthService : IAuthService
             Role = role
         };
 
-        var createdUser =
-            await _userRepository.CreateAsync(user);
+        //save the user (repository inserts record)
+        var createdUser = await _userRepository.CreateAsync(user);
 
+        //we return response 
         return new RegisterResponseDto
         {
             Message = "User registered successfully",
@@ -93,13 +100,15 @@ public class AuthService : IAuthService
         };
     }
 
+    
+    //2.Login user
     public async Task<LoginResponseDto> LoginAsync(
         LoginRequestDto request)
     {
         // 1. Fetch user by email
-        var user =
-            await _userRepository.GetByEmailAsync(request.Email);
+        var user = await _userRepository.GetByEmailAsync(request.Email);
 
+        //if user not found
         if (user == null)
         {
             throw new UnauthorizedException(
@@ -107,20 +116,18 @@ public class AuthService : IAuthService
         }
 
         // 2. Verify password
-        var isPasswordValid =
-            AuthDbSeeder.VerifyPassword(
-                request.Password,
-                user.PasswordHash);
+        var isPasswordValid = AuthDbSeeder.VerifyPassword(request.Password, user.PasswordHash);
 
+        //if wrong password
         if (!isPasswordValid)
         {
-            throw new UnauthorizedException(
-                "Invalid email or password.");
+            throw new UnauthorizedException("Invalid email or password.");
         }
 
-        // 3. Generate JWT
+        // 3. Generating JWT
         var token = GenerateJwtToken(user);
 
+        //return Login response
         return new LoginResponseDto
         {
             Token = token,
@@ -129,16 +136,20 @@ public class AuthService : IAuthService
         };
     }
 
+    
+    //3.Get current user 
     public async Task<UserDto> GetCurrentUserAsync(int userId)
     {
+        //find user by id
         var user = await _userRepository.GetByIdAsync(userId);
 
+        //if not found
         if (user == null)
         {
-            throw new NotFoundException(
-                "User not found.");
+            throw new NotFoundException("User not found.");
         }
 
+        //return user details by creating user-dto
         return new UserDto
         {
             UserId = user.UserId,
@@ -149,13 +160,17 @@ public class AuthService : IAuthService
         };
     }
 
+    
+    //Generating JWT token
     private string GenerateJwtToken(User user)
     {
+        //create token handler(jwt utility object)
         var tokenHandler = new JwtSecurityTokenHandler();
 
-        var key = Encoding.UTF8.GetBytes(
-            _jwtSettings.SecretKey);
+        //converting secret key to bytes 
+        var key = Encoding.UTF8.GetBytes( _jwtSettings.SecretKey);
 
+        //claims : Information stored inside token
         var claims = new List<Claim>
         {
             new Claim("UserId", user.UserId.ToString()),
@@ -179,6 +194,7 @@ public class AuthService : IAuthService
                 user.Role)
         };
 
+        //creating token descriptor contain : claims, expiry, issuer, audience, secret key
         var tokenDescriptor =
             new SecurityTokenDescriptor
             {
@@ -193,9 +209,10 @@ public class AuthService : IAuthService
                         SecurityAlgorithms.HmacSha256Signature)
             };
 
-        var token =
-            tokenHandler.CreateToken(tokenDescriptor);
+        //creation of token
+        var token = tokenHandler.CreateToken(tokenDescriptor);
 
+        //convert to string for returning
         return tokenHandler.WriteToken(token);
     }
 }

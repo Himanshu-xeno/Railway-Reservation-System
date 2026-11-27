@@ -1,16 +1,19 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+//Entity model - db table in C#
+using System.ComponentModel.DataAnnotations;//provide attribute (validation,db mapping)
+using System.ComponentModel.DataAnnotations.Schema;//control database table behavior
 
 namespace AuthService.Models;
 
+//This class maps to Users table.
 [Table("Users")]
 public class User
 {
-    [Key]
+    [Key] //PK
+    //Database generates value automatically.
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int UserId { get; set; }
 
-    [Required]
+    [Required]  //can't be null
     [MaxLength(100)]
     public string Name { get; set; } = string.Empty;
 
