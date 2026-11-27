@@ -5,6 +5,7 @@ namespace ReservationService.DTOs;
 public class BookTicketRequestDto
 {
     [Required(ErrorMessage = "Train ID is required")]
+    [Range(1, int.MaxValue, ErrorMessage = "Train ID must be a valid positive number.")]
     public int TrainId { get; set; }
 
     [Required(ErrorMessage = "At least one passenger is required")]

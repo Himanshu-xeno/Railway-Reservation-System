@@ -51,6 +51,32 @@ public class ReservationService : IReservationService
 
     public async Task<BookingResponseDto> BookTicketAsync(int userId, string idempotencyKey, BookTicketRequestDto request)
     {
+        // 0. Passenger list validation
+        if (request.Passengers == null || request.Passengers.Count < 1 || request.Passengers.Count > 6)
+        {
+            throw new BadRequestException("Passenger count must be between 1 and 6.");
+        }
+
+        foreach (var p in request.Passengers)
+        {
+            if (string.IsNullOrWhiteSpace(p.PassengerName) || p.PassengerName.Trim().Length < 2 || p.PassengerName.Trim().Length > 100)
+            {
+                throw new BadRequestException("Passenger name must be between 2 and 100 characters.");
+            }
+
+            if (p.Age < 1 || p.Age > 120)
+            {
+                throw new BadRequestException($"Invalid age '{p.Age}' for passenger {p.PassengerName}. Age must be between 1 and 120.");
+            }
+
+            if (!string.Equals(p.Gender, "Male", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(p.Gender, "Female", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(p.Gender, "Other", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new BadRequestException($"Invalid gender '{p.Gender}' for passenger {p.PassengerName}. Gender must be Male, Female, or Other.");
+            }
+        }
+
         // 1. Validate train exists and is active
         var train = await _trainClient.GetTrainByIdAsync(request.TrainId);
         if (train.Status != TrainStatusConstants.Active)

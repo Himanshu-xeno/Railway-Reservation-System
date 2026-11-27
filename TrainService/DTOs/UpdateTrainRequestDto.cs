@@ -38,6 +38,6 @@ public class UpdateTrainRequestDto
     public decimal Fare { get; set; }
 
     [Required(ErrorMessage = "Status is required")]
-    [MaxLength(20)]
+    [RegularExpression("^(Active|Inactive)$", ErrorMessage = "Status must be either 'Active' or 'Inactive'.")]
     public string Status { get; set; } = "Active";
 }

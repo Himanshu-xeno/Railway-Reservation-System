@@ -18,6 +18,12 @@ public class PaymentService : IPaymentService
 
     public async Task<PaymentResponseDto> ProcessPaymentAsync(ProcessPaymentRequestDto request)
     {
+        // 0. Reservation ID validation
+        if (request.ReservationId <= 0)
+        {
+            throw new BadRequestException("Reservation ID must be a valid positive integer.");
+        }
+
         // 1. Amount validation
         if (request.Amount <= 0)
         {
@@ -52,16 +58,28 @@ public class PaymentService : IPaymentService
 
     public async Task<PaymentResponseDto> RefundPaymentAsync(int reservationId, RefundPaymentRequestDto request)
     {
+        if (reservationId <= 0)
+        {
+            throw new BadRequestException("Reservation ID must be a valid positive integer.");
+        }
+
         if (request.Amount <= 0)
         {
             throw new BadRequestException("Refund amount must be greater than zero.");
         }
 
         // 1. Verify original payment exists
-        var hasPaid = await _paymentRepository.HasSuccessfulPaymentAsync(reservationId);
-        if (!hasPaid)
+        var payments = await _paymentRepository.GetByReservationIdAsync(reservationId);
+        var originalPayment = payments.FirstOrDefault(p => p.PaymentType == PaymentTypeConstants.Payment && p.PaymentStatus == PaymentStatusConstants.Success);
+        if (originalPayment == null)
         {
             throw new BadRequestException("No successful payment found for this reservation to refund.");
+        }
+
+        // Validate refund amount against original payment
+        if (request.Amount > originalPayment.Amount)
+        {
+            throw new BadRequestException($"Refund amount ({request.Amount}) cannot exceed original payment amount ({originalPayment.Amount}).");
         }
 
         // 2. Prevent duplicate refund

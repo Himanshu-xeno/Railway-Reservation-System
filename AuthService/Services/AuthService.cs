@@ -47,25 +47,46 @@ public class AuthService : IAuthService
                 "Email is already registered.");
         }
 
-        // 2. Password validation
+        // 2. Business Validations
+        if (string.IsNullOrWhiteSpace(request.Name) || request.Name.Trim().Length < 2 || request.Name.Trim().Length > 100)
+        {
+            throw new BadRequestException("Name must be between 2 and 100 characters.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.Email))
+        {
+            throw new BadRequestException("Email is required.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.Phone) || !Regex.IsMatch(request.Phone.Trim(), @"^\d{10}$"))
+        {
+            throw new BadRequestException("Phone number must contain exactly 10 digits.");
+        }
+
         if (string.IsNullOrWhiteSpace(request.Password))
         {
-            throw new BadRequestException(
-                "Password is required.");
+            throw new BadRequestException("Password is required.");
         }
 
         if (request.Password.Length < 8)
         {
-            throw new BadRequestException(
-                "Password must be at least 8 characters.");
+            throw new BadRequestException("Password must be at least 8 characters.");
         }
 
         if (!Regex.IsMatch(
                 request.Password,
-                @"^(?=.*[A-Za-z])(?=.*\d).{8,}$"))
+                @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$"))
         {
             throw new BadRequestException(
-                "Password must be at least 8 characters and contain at least one letter and one number.");
+                "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.");
+        }
+
+        // Validate role if specified
+        if (!string.IsNullOrWhiteSpace(request.Role) &&
+            !string.Equals(request.Role, Roles.Admin, StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(request.Role, Roles.User, StringComparison.OrdinalIgnoreCase))
+        {
+            throw new BadRequestException("Invalid role specified. Allowed roles are 'User' or 'Admin'.");
         }
 
         // 3. Hash password - storing the HashPassword

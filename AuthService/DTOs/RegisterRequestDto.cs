@@ -14,16 +14,15 @@ public class RegisterRequestDto
     public string Email { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Password is required")]
-[MinLength(8, ErrorMessage = "Password must be at least 8 characters.")]
-[RegularExpression(
-    @"^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$",
-    ErrorMessage = "Password must be at least 8 characters and contain at least one letter, one number, and one special character."
-)]
-public string Password { get; set; } = string.Empty;
+    [MinLength(8, ErrorMessage = "Password must be at least 8 characters.")]
+    [RegularExpression(
+        @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$",
+        ErrorMessage = "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character."
+    )]
+    public string Password { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Phone number is required")]
-    [Phone(ErrorMessage = "Invalid phone number format")]
-    [MaxLength(15)]
+    [RegularExpression(@"^\d{10}$", ErrorMessage = "Phone number must contain exactly 10 digits.")]
     public string Phone { get; set; } = string.Empty;
 
     public string? Role { get; set; } = "User";

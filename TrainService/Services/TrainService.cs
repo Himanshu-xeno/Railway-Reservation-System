@@ -89,6 +89,22 @@ public class TrainService : ITrainService
             throw new BadRequestException("Fare must be greater than zero.");
         }
 
+        // 4. Departure and Arrival Time validation
+        if (request.DepartureTime < TimeSpan.Zero || request.DepartureTime >= TimeSpan.FromDays(1))
+        {
+            throw new BadRequestException("Departure time must be a valid time of day between 00:00 and 23:59:59.");
+        }
+
+        if (request.ArrivalTime < TimeSpan.Zero || request.ArrivalTime >= TimeSpan.FromDays(1))
+        {
+            throw new BadRequestException("Arrival time must be a valid time of day between 00:00 and 23:59:59.");
+        }
+
+        if (request.DepartureTime == request.ArrivalTime)
+        {
+            throw new BadRequestException("Departure time and arrival time cannot be identical.");
+        }
+
         var train = new Train
         {
             TrainName = request.TrainName.Trim(),
@@ -120,9 +136,40 @@ public class TrainService : ITrainService
             throw new BadRequestException("Destination station must differ from source station.");
         }
 
+        if (request.TotalSeats <= 0)
+        {
+            throw new BadRequestException("Total seats must be greater than zero.");
+        }
+
         if (request.AvailableSeats > request.TotalSeats || request.AvailableSeats < 0)
         {
             throw new BadRequestException("Available seats must be between 0 and total seats.");
+        }
+
+        if (request.Fare <= 0)
+        {
+            throw new BadRequestException("Fare must be greater than zero.");
+        }
+
+        if (!string.Equals(request.Status.Trim(), TrainStatusConstants.Active, StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(request.Status.Trim(), TrainStatusConstants.Inactive, StringComparison.OrdinalIgnoreCase))
+        {
+            throw new BadRequestException("Train status must be either 'Active' or 'Inactive'.");
+        }
+
+        if (request.DepartureTime < TimeSpan.Zero || request.DepartureTime >= TimeSpan.FromDays(1))
+        {
+            throw new BadRequestException("Departure time must be a valid time of day between 00:00 and 23:59:59.");
+        }
+
+        if (request.ArrivalTime < TimeSpan.Zero || request.ArrivalTime >= TimeSpan.FromDays(1))
+        {
+            throw new BadRequestException("Arrival time must be a valid time of day between 00:00 and 23:59:59.");
+        }
+
+        if (request.DepartureTime == request.ArrivalTime)
+        {
+            throw new BadRequestException("Departure time and arrival time cannot be identical.");
         }
 
         train.TrainName = request.TrainName.Trim();

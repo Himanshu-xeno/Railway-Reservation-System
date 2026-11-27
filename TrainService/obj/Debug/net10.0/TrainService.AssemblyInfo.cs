@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TrainService")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+659b7fb56d6f8863304942ce44ffb68a6f257f70")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ebe21a7b34790603440f9acef966ed0e9080535c")]
 [assembly: System.Reflection.AssemblyProductAttribute("TrainService")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TrainService")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
